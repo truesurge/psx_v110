@@ -19,8 +19,6 @@ psx_cpu::psx_cpu()
 	sr.full = 0;
 	epc.full = 0;
 	cause.full = 0;
-
-	proceeding = 0;
 }
 
 void psx_cpu::Fetch()
@@ -30,17 +28,21 @@ void psx_cpu::Fetch()
 
 void psx_cpu::Execute()
 {
+	CYCLES+=2;
+
 	if (slot == 0)
 	{
 		main[opcode.op]();
 		pc += 4;
+		CYCLES+=2;
 	}
 	else
 	{
 		main[opcode.op]();
 		pc = slot;
 		slot = 0;
-		JumpRoutine();
+		TestJump();
+		counters.Manage();
 	}
-	counters.Update(2);
+
 }

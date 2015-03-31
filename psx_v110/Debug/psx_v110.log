@@ -1,8 +1,35 @@
-﻿Build started 28.03.2015 19:24:41.
+﻿Build started 31.03.2015 10:34:14.
      1>Project "C:\Users\admin\Desktop\psx_v110\psx_v110\psx_v110.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt psx_gamepad.cpp
+         D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt interpreter.cpp main.cpp psx_cd.cpp psx_counters.cpp psx_cpu.cpp psx_dma.cpp psx_gamepad.cpp psx_gpu.cpp psx_mem.cpp psx_spu.cpp
+         psx_mem.cpp
+         Создание кода...
+         Компиляция...
+         psx_spu.cpp
+         psx_gpu.cpp
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_gpu.cpp(32): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_gpu.cpp(47): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_gpu.cpp(61): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_gpu.cpp(74): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_gpu.cpp(76): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_gpu.cpp(78): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_gpu.cpp(90): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_gpu.cpp(92): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_gpu.cpp(94): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_gpu.cpp(96): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_gpu.cpp(98): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_gpu.cpp(100): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_gpu.cpp(117): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_gpu.cpp(132): warning C4018: <: несоответствие типов со знаком и без знака
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_gpu.cpp(141): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
          psx_gamepad.cpp
+         psx_dma.cpp
+         psx_cpu.cpp
+         psx_counters.cpp
+         psx_cd.cpp
+         main.cpp
+         interpreter.cpp
+         Создание кода...
        Link:
          D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\admin\Desktop\psx_v110\Debug\psx_v110.exe" /INCREMENTAL /NOLOGO opengl32.lib glu32.lib glfw3.lib glfw3dll.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\admin\Desktop\psx_v110\Debug\psx_v110.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\admin\Desktop\psx_v110\Debug\psx_v110.lib" /MACHINE:X86 Debug\interpreter.obj
          Debug\main.obj
@@ -19,4 +46,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.48
+Time Elapsed 00:00:02.79

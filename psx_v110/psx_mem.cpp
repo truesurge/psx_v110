@@ -33,6 +33,8 @@ psx_mem::psx_mem()
 
 void psx_mem::W8(u32 address, u8 val)
 {
+	CYCLES+=1;
+
 	u32 real = address & 0x1FFFFFFF;
 	if (real <= 0x200000)  { if (COP0_SR.Isc) return; *(u8*)(ram + (real & 0x3FFFFF)) = val; return; };
 	if ((real >= 0x1F800000) && (real <= 0x1F800400)) { if (COP0_SR.Isc) return; *(u8*)(scratch + (real & 0x3FF)) = val; return; };
@@ -68,7 +70,7 @@ void psx_mem::W8(u32 address, u8 val)
 			printf("PAD 8 CTRL = %x\n",val);
 			pad.WriteCtrl(val);
 			break;
-		case 0x1F02041:
+		case 0x1F802041:
 			break;
 		default:
 			printf("W8 : WTF 0x%08X = %X \n", address, val);
@@ -80,6 +82,8 @@ void psx_mem::W8(u32 address, u8 val)
 
 void psx_mem::W16(u32 address, u16 val)
 {
+	CYCLES+=1;
+
 	u32 real = address & 0x1FFFFFFF;
 	if (real <= 0x200000)  { if (COP0_SR.Isc) return; *(u16*)(ram + (real & 0x3FFFFF)) = val; return; };
 	if ((real >= 0x1F800000) && (real <= 0x1F800400)) { if (COP0_SR.Isc) return; *(u16*)(scratch + (real & 0x3FF)) = val; return; };
@@ -129,6 +133,8 @@ void psx_mem::W16(u32 address, u16 val)
 
 void psx_mem::W32(u32 address, u32 val)
 {
+	CYCLES+=1;
+
 	u32 real = address & 0x1FFFFFFF;
 	if (real <= 0x200000)  { if (COP0_SR.Isc) return; *(u32*)(ram + (real & 0x3FFFFF)) = val; return; };
 	if ((real >= 0x1F800000) && (real <= 0x1F800400)) { if (COP0_SR.Isc) return; *(u32*)(scratch + (real & 0x3FF)) = val; return; };
@@ -176,9 +182,6 @@ void psx_mem::W32(u32 address, u32 val)
 			break;
 		case GPU1:
 			GL.WriteGP1(val);
-			break;
-		case T1_VALUE:
-			counters.t1 = val;
 			break;
 		case JOY_STAT:
 			printf("JOYSTAT 32\n");
@@ -233,6 +236,8 @@ u8 psx_mem::R8(u32 address)
 
 u16 psx_mem::R16(u32 address)
 {
+	CYCLES+=1;
+
 	u32 real = address & 0x1FFFFFFF;
 	if (real <= 0x200000) return *(u32*)(ram + (real & 0x3FFFFF));
 	if ((real >= 0x1F800000) && (real <= 0x1F800400)) return *(u16*)(scratch + (real & 0x3FF));
@@ -281,6 +286,8 @@ u16 psx_mem::R16(u32 address)
 
 u32 psx_mem::R32(u32 address)
 {
+	CYCLES+=1;
+
 	u32 real = address & 0x1FFFFFFF;
 	if (real <= 0x200000) return *(u32*)(ram+(real&0x3FFFFF));
 	if ((real >= 0x1F800000) && (real <= 0x1F800400)) return *(u32*)(scratch + (real & 0x3FF));
@@ -325,9 +332,6 @@ u32 psx_mem::R32(u32 address)
 		case GPU1 :
 			return GL.ReadGP1();
 			break;
-		case T1_VALUE:
-			return 1;
-			break;
 		case JOY_STAT:
 			printf("JOYSTAT 32\n");
 			break;
@@ -340,6 +344,8 @@ u32 psx_mem::R32(u32 address)
 		case JOY_DATA:
 			printf("JOYDATA 32\n");
 			break;
+		case T1_VALUE:
+			return 248;
 		default:
 			printf("R32 : WTF 0x%08X ? \n", address);
 			return *(u32*)(io + (real & 0x1FFF));

@@ -297,7 +297,6 @@ void psx_gpu::WriteGP0(u32 val)
 
 void psx_gpu::WriteList(u32* ptr, u32 size)
 {
-	counters.Update(size*2);
 	while (size--)
 		WriteGP0(*ptr++);
 }

@@ -1,7 +1,6 @@
 #pragma once
 
-/* MISC*/
-#define gSYSCALLS
+/* TYPES */
 
 #define u8  unsigned char 
 #define u16 unsigned short
@@ -13,15 +12,14 @@
 #define s32 int 
 #define s64 long long
 
-#define LOOP while (1)
-
 /* CPU */
 
-#define PC   R3000A.pc
-#define SLOT R3000A.slot
-#define RA   R3000A.reg[31]
-#define R9   R3000A.reg[9]
-#define R4   R3000A.reg[4]
+#define PC		R3000A.pc
+#define SLOT	R3000A.slot
+#define RA		R3000A.reg[31]
+#define R9		R3000A.reg[9]
+#define R4		R3000A.reg[4]
+#define CYCLES  counters.cycles
 
 /* OPCODE */
 

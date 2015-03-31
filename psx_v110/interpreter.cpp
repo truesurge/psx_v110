@@ -9,7 +9,7 @@
 extern psx_cpu R3000A;
 extern psx_mem mem;
 
-void JumpRoutine()
+void TestJump()
 {
 	if (PC == 0x000000b0)
 	{
@@ -41,7 +41,7 @@ void Interrupt(int code)
 	else 
 	{
 		COP0_CAUSE.BD = 1;
-		COP0_EPC.full = PC;		
+		COP0_EPC.full = PC+8;		
 	}
 
 	COP0_SR.IEo=COP0_SR.IEp;

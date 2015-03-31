@@ -5,7 +5,7 @@ void(*spec[])();
 void(*bcnd[])();
 void(*cop0[])();
 
-void JumpRoutine();
+void TestJump();
 void Interrupt(int code);
 
 void psxSPECIAL();

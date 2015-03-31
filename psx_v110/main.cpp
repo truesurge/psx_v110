@@ -17,7 +17,7 @@ psx_cd cd;
 int main()
 {
 
-	LOOP
+	while(!glfwWindowShouldClose(GL.screen))
 	{
 		R3000A.Fetch();
 		R3000A.Execute();
