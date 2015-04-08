@@ -18,7 +18,7 @@ psx_cd::psx_cd()
 
 u8 psx_cd::R0()
 {
-	//printf("CD : REG0?\n");
+	//printf("CD : R0?\n");
 	//_getch();
 	index.busy = 0;
 	index.full |= 0x18;
@@ -27,7 +27,7 @@ u8 psx_cd::R0()
 }
 u8 psx_cd::R1()
 {
-	//printf("CD : REG1?");
+	//printf("CD : R1?");
 	//_getch();
 	if (index.port==1)
 	{
@@ -47,13 +47,13 @@ u8 psx_cd::R1()
 }
 u8 psx_cd::R2()
 {
-	//printf("CD : REG2?\n");
+	//printf("CD : R2?\n");
 	//_getch();
 	return 0;
 }
 u8 psx_cd::R3()
 {
-	//printf("CD : REG3?\n");
+	//printf("CD : R3?\n");
 	//_getch();
 	return int_flag.full;
 }
@@ -61,7 +61,7 @@ u8 psx_cd::R3()
 
 void psx_cd::W0(u8 val)
 {
-	//printf("CD : REG0=%X\n", val);
+	//printf("CD : R0=%X\n", val);
 	//_getch();
 	index.full &= 0xFC;
 	index.full |= val&3;
@@ -73,18 +73,18 @@ void psx_cd::W1(u8 val)
 		switch (val)
 		{
 		case 0x1:
-			printf("CD : GetStat \n");
+			//printf("CD : GetStat \n");
 			int_flag.int_type = 3;
 			response.push(index.full);
+
 			mem.int_reg.cdrom = mem.int_mask.cdrom;
-			if(mem.int_mask.cdrom) Interrupt(INT_GENERAL);
 			break;
 		case 0x19:
-			printf("CD : Test - ");
+			//printf("CD : Test - ");
 			switch (params.front())
 			{
 			case 0x20:
-				printf("GetVersion \n");
+				//printf("GetVersion \n");
 
 				int_flag.int_type = 3;
 
@@ -94,13 +94,13 @@ void psx_cd::W1(u8 val)
 				response.push(version[3]);
 
 				mem.int_reg.cdrom = mem.int_mask.cdrom;
-				Interrupt(INT_GENERAL);
 			}
 			break;
 		default:
-			printf("CD : Push cmd %X\n", val);
+			//printf("CD : Push cmd %X\n", val);
 			break;
 		}
+		//_getch();
 	}
 }
 void psx_cd::W2(u8 val)
@@ -115,7 +115,7 @@ void psx_cd::W2(u8 val)
 }
 void psx_cd::W3(u8 val)
 {
-	//printf("CD : REG3=%X\n", val);
+	//printf("CD : .full3=%X\n", val);
 	int_flag.full &= 0xF8;
 	int_flag.full |= val & 7;
 	//_getch();

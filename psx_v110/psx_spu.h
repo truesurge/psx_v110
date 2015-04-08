@@ -1,4 +1,4 @@
 #include "defines.h"
 
-void SPU_writeRegister(unsigned long reg, unsigned short val);
-unsigned short SPU_readRegister(unsigned long reg);
+void SPU_writeregister(unsigned long reg, unsigned short val);
+unsigned short SPU_readregister(unsigned long reg);

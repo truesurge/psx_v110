@@ -90,6 +90,7 @@
     <ClInclude Include="psx_gamepad.h" />
     <ClInclude Include="psx_gpu.h" />
     <ClInclude Include="psx_mem.h" />
+    <ClInclude Include="psx_spu.h" />
     <ClInclude Include="structures.h" />
     <ClInclude Include="syscalls.h" />
   </ItemGroup>

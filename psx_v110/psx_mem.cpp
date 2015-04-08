@@ -21,10 +21,10 @@ psx_gamepad pad;
 psx_mem::psx_mem()
 {
 	FILE* file;
-	fopen_s(&file, "./bios/dtlh3002.bin", "rb");
+	fopen_s(&file, "./bios/scph1002.bin", "rb");
 	if (file == NULL)
 	{
-		printf("Place scph101.bin in bios folder\n");
+		printf("Place scph1002.bin in bios folder\n");
 		exit(1);
 	}
 	fread(rom, 512 * 1024, 1, file);
@@ -33,7 +33,7 @@ psx_mem::psx_mem()
 
 void psx_mem::W8(u32 address, u8 val)
 {
-	CYCLES+=1;
+	counters.Advance(1);
 
 	u32 real = address & 0x1FFFFFFF;
 	if (real <= 0x200000)  { if (COP0_SR.Isc) return; *(u8*)(ram + (real & 0x3FFFFF)) = val; return; };
@@ -54,21 +54,8 @@ void psx_mem::W8(u32 address, u8 val)
 		case CDREG3:
 			cd.W3(val);
 			break;
-		case 0x1F801040:
-			printf("PAD 8 DATA = %x\n",val);
+		case JOY_DATA:
 			pad.WriteData(val);
-			break;
-		case 0x1F801044:
-			printf("PAD 8 STAT = %x\n",val);
-			pad.WriteStat(val);
-			break;
-		case 0x1F801048:
-			printf("PAD 8 MODE = %x\n",val);
-			pad.WriteMode(val);
-			break;
-		case 0x1F80104A:
-			printf("PAD 8 CTRL = %x\n",val);
-			pad.WriteCtrl(val);
 			break;
 		case 0x1F802041:
 			break;
@@ -82,7 +69,7 @@ void psx_mem::W8(u32 address, u8 val)
 
 void psx_mem::W16(u32 address, u16 val)
 {
-	CYCLES+=1;
+	counters.Advance(1);
 
 	u32 real = address & 0x1FFFFFFF;
 	if (real <= 0x200000)  { if (COP0_SR.Isc) return; *(u16*)(ram + (real & 0x3FFFFF)) = val; return; };
@@ -91,21 +78,44 @@ void psx_mem::W16(u32 address, u16 val)
 	{
 		switch (real)
 		{
+
+		case T1_VALUE:
+			counters.Counters[1].value = val;
+			break;
+		case T1_MODE:
+			counters.WriteMode(1,val);
+			break;
+		case T1_TARGET:
+			counters.WriteTarget(1,val);
+			break;
+
+		case T2_VALUE:
+			counters.Counters[2].value = val;
+			break;
+		case T2_MODE:
+			counters.WriteMode(2,val);
+			break;
+		case T2_TARGET:
+			counters.WriteTarget(2,val);
+			break;
+
+
+
 		case 0x1F801040:
-			printf("PAD 16 DATA = %x\n",val);
+			//printf("PAD 16 DATA = %x\n",val);
 			pad.WriteData((u8)val);
 			pad.WriteData((u8)(val>>8));
 			break;
 		case 0x1F801044:
-			printf("PAD 16 STAT = %x\n",val);
+			//printf("PAD 16 STAT = %x\n",val);
 			pad.WriteStat(val);
 			break;
 		case 0x1F801048:
-			printf("PAD 16 MODE = %x\n",val);
+			//printf("PAD 16 MODE = %x\n",val);
 			pad.WriteMode(val);
 			break;
 		case 0x1F80104A:
-			printf("PAD 16 CTRL = %x\n",val);
+			//printf("PAD 16 CTRL = %x\n",val);
 			pad.WriteCtrl(val);
 			break;
 		case I_MASK:
@@ -117,7 +127,7 @@ void psx_mem::W16(u32 address, u16 val)
 		default:
 		{
 				   if (address >= 0x1f801c00 && address < 0x1f801e00) {
-					   SPU_writeRegister(address, val);
+					   SPU_writeregister(address, val);
 					   return;
 				   } 
 				   else
@@ -133,7 +143,7 @@ void psx_mem::W16(u32 address, u16 val)
 
 void psx_mem::W32(u32 address, u32 val)
 {
-	CYCLES+=1;
+	counters.Advance(1);
 
 	u32 real = address & 0x1FFFFFFF;
 	if (real <= 0x200000)  { if (COP0_SR.Isc) return; *(u32*)(ram + (real & 0x3FFFFF)) = val; return; };
@@ -183,18 +193,7 @@ void psx_mem::W32(u32 address, u32 val)
 		case GPU1:
 			GL.WriteGP1(val);
 			break;
-		case JOY_STAT:
-			printf("JOYSTAT 32\n");
-			break;
-		case JOY_CTRL:
-			printf("JOYCTRL 32\n");
-			break;
-		case JOY_MODE:
-			printf("JOYMODE 32\n");
-			break;
-		case JOY_DATA:
-			printf("JOYDATA 32\n");
-			break;
+		
 		default:
 			//printf("W32 : WTF 0x%08X = %X \n", address, val);
 			*(u32*)(io + (real & 0x1FFF)) = val;
@@ -213,6 +212,9 @@ u8 psx_mem::R8(u32 address)
 	{
 		switch (real)
 		{
+		case JOY_DATA:
+			return pad.ReadData();
+			break;
 		case CDREG0:
 			return cd.R0();
 			break;
@@ -236,7 +238,7 @@ u8 psx_mem::R8(u32 address)
 
 u16 psx_mem::R16(u32 address)
 {
-	CYCLES+=1;
+	counters.Advance(1);
 
 	u32 real = address & 0x1FFFFFFF;
 	if (real <= 0x200000) return *(u32*)(ram + (real & 0x3FFFFF));
@@ -246,20 +248,13 @@ u16 psx_mem::R16(u32 address)
 	{
 		switch (real)
 		{
-		case 0x1F801040:
-			printf("PAD 16 DATA?\n");
-			return (((u16)pad.ReadData()) | ((u16)pad.ReadData() >> 8));
-			break;
-		case 0x1F801044:
-			printf("PAD 16 STAT?\n");
+		case JOY_STAT:
 			return pad.ReadStat();
 			break;
-		case 0x1F801048:
-			printf("PAD 16 MODE?\n");
+		case JOY_MODE:
 			return pad.ReadMode();
 			break;
-		case 0x1F80104A:
-			printf("PAD 16 CTRL?\n");
+		case JOY_CTRL:
 			return pad.ReadCtrl();
 			break;
 		case I_MASK:
@@ -268,10 +263,18 @@ u16 psx_mem::R16(u32 address)
 		case I_STAT:
 			return int_reg.full;
 			break;
+
+		case T1_VALUE:
+			return counters.GetValue(1);
+			break;
+		case T2_VALUE:
+			return counters.GetValue(2);
+			break;
+
 		default:
 		{
 				   if (address >= 0x1f801c00 && address < 0x1f801e00) 
-					   return SPU_readRegister(address);
+					   return SPU_readregister(address);
 				   else
 				   {
 					   printf("R16 : WTF 0x%08X ? \n", address);
@@ -286,7 +289,7 @@ u16 psx_mem::R16(u32 address)
 
 u32 psx_mem::R32(u32 address)
 {
-	CYCLES+=1;
+	counters.Advance(1);
 
 	u32 real = address & 0x1FFFFFFF;
 	if (real <= 0x200000) return *(u32*)(ram+(real&0x3FFFFF));
@@ -326,26 +329,22 @@ u32 psx_mem::R32(u32 address)
 		case I_STAT:
 			return int_reg.full;
 			break;
+
 		case GPU0:
 			return GL.ReadGP0();
 			break;
 		case GPU1 :
 			return GL.ReadGP1();
 			break;
-		case JOY_STAT:
-			printf("JOYSTAT 32\n");
-			break;
-		case JOY_CTRL:
-			printf("JOYCTRL 32\n");
-			break;
-		case JOY_MODE:
-			printf("JOYMODE 32\n");
-			break;
-		case JOY_DATA:
-			printf("JOYDATA 32\n");
-			break;
+
 		case T1_VALUE:
-			return 248;
+			return counters.GetValue(1);
+			break;
+
+		case T2_VALUE:
+			return counters.GetValue(2);
+			break;
+
 		default:
 			printf("R32 : WTF 0x%08X ? \n", address);
 			return *(u32*)(io + (real & 0x1FFF));

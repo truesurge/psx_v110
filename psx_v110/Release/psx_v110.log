@@ -1,8 +1,29 @@
-﻿Build started 28.03.2015 20:26:09.
+﻿Build started 08.04.2015 4:49:30.
      1>Project "C:\Users\admin\Desktop\psx_v110\psx_v110\psx_v110.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt psx_gamepad.cpp
-         psx_gamepad.cpp
+         D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt psx_gpu.cpp
+         psx_gpu.cpp
+     1>psx_gpu.cpp(73): warning C4333: >>: слишком большое смещение вправо; потеря данных
+     1>psx_gpu.cpp(191): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>psx_gpu.cpp(240): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>psx_gpu.cpp(255): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>psx_gpu.cpp(269): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>psx_gpu.cpp(282): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>psx_gpu.cpp(284): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>psx_gpu.cpp(286): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>psx_gpu.cpp(298): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>psx_gpu.cpp(300): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>psx_gpu.cpp(302): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>psx_gpu.cpp(304): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>psx_gpu.cpp(306): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>psx_gpu.cpp(308): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>psx_gpu.cpp(356): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>psx_gpu.cpp(392): warning C4018: <: несоответствие типов со знаком и без знака
+     1>psx_gpu.cpp(393): warning C4018: <: несоответствие типов со знаком и без знака
+     1>psx_gpu.cpp(402): warning C4018: <: несоответствие типов со знаком и без знака
+     1>psx_gpu.cpp(403): warning C4018: <: несоответствие типов со знаком и без знака
+     1>psx_gpu.cpp(406): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+     1>psx_gpu.cpp(420): warning C4018: <: несоответствие типов со знаком и без знака
        Link:
          D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\admin\Desktop\psx_v110\Release\psx_v110.exe" /INCREMENTAL:NO /NOLOGO opengl32.lib glu32.lib glfw3.lib glfw3dll.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\admin\Desktop\psx_v110\Release\psx_v110.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\admin\Desktop\psx_v110\Release\psx_v110.lib" /MACHINE:X86 /SAFESEH Release\interpreter.obj
          Release\main.obj
@@ -15,10 +36,11 @@
          Release\psx_mem.obj
          Release\psx_spu.obj
          Создание кода
+     1>c:\users\admin\desktop\psx_v110\psx_v110\psx_counters.cpp(64): warning C4715: psx_counters::GetValue: значение возвращается не при всех путях выполнения
          Создание кода завершено
          psx_v110.vcxproj -> C:\Users\admin\Desktop\psx_v110\Release\psx_v110.exe
      1>Done Building Project "C:\Users\admin\Desktop\psx_v110\psx_v110\psx_v110.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.59
+Time Elapsed 00:00:00.84

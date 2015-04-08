@@ -11,6 +11,11 @@ extern psx_mem mem;
 
 void TestJump()
 {
+	//if (PC == 0x000000a0)
+	//{
+	//	printf("SYS : %s\n",syscalls_a0[R9]);
+	//	_getch();
+	//}
 	if (PC == 0x000000b0)
 	{
 		switch (R9)
@@ -19,17 +24,23 @@ void TestJump()
 			putchar(R4);
 			break;
 		default:
+			//printf("SYS : %s\n",syscalls_b0[R9]);
+			//_getch();
 			break;
 		}
 	}
+	//if (PC == 0x000000c0)
+	//{
+	//	printf("SYS : %s\n",syscalls_c0[R9]);
+	//	_getch();
+	//}
 };
 
 void Interrupt(int code)
 {
-
-	COP0_CAUSE.full |= 0x200;
-	COP0_SR.full	|= 0x200;
-	COP0_SR.full	|= 0x800;
+	COP0_CAUSE.full |= 0x400;
+	COP0_SR.full |= 0x400;
+	COP0_SR.full |= 0x1000;
 
 	COP0_CAUSE.EXCODE=code;
 

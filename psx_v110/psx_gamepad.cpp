@@ -1,74 +1,97 @@
 #include "psx_gamepad.h"
 #include "interpreter.h"
+#include "psx_counters.h"
 #include "psx_cpu.h"
 #include "psx_mem.h"
 #include <cstdio>
 
 extern psx_cpu R3000A;
+extern psx_counters counters;
 extern psx_mem mem;
+
+// Status Flags
+#define TX_RDY		0x0001
+#define RX_RDY		0x0002
+#define TX_EMPTY	0x0004
+#define PARITY_ERR	0x0008
+#define RX_OVERRUN	0x0010
+#define FRAMING_ERR	0x0020
+#define SYNC_DETECT	0x0040
+#define DSR			0x0080
+#define CTS			0x0100
+#define IRQ			0x0200
+
+// Control Flags
+#define TX_PERM		0x0001
+#define DTR			0x0002
+#define RX_PERM		0x0004
+#define BREAK		0x0008
+#define RESET_ERR	0x0010
+#define RTS			0x0020
+#define SIO_RESET	0x0040
 
 psx_gamepad::psx_gamepad()
 {
-	Stat = Mode = Ctrl = 0;
-	Stat |= 5;
-	Ctrl |= 1;
+	StatReg = 0 | TX_RDY | TX_EMPTY;
 }
 
 u16 psx_gamepad::ReadStat()
 {
-	_getch();
-	return Stat;
+	return StatReg;
 }
 
 u16 psx_gamepad::ReadCtrl()
 {
-	_getch();
-	return 0x3003;
+	return CtrlReg;
 }
 
 u8 psx_gamepad::ReadData()
 {
+	printf("Data?\n");
+	mem.int_reg.joy=0;
 	_getch();
-	return 0;
+	return 0x41;
 }
 
 u16 psx_gamepad::ReadMode()
 {
-	_getch();
+
 	return Mode;
+}
+
+void psx_gamepad::WriteStat(u16 val)
+{
 }
 
 void psx_gamepad::WriteData(u8 val)
 {
-	_getch();
-	
-	Data = val;
-
-	Ctrl |= 0x200;
-	Ctrl |= 0x400;
-
-	Stat |= 5;
-	Stat |= 0x100;
-
-	mem.int_reg.joy=1;
-	Interrupt(INT_GENERAL);
+	switch(val)
+	{
+	case 0x1:
+		printf("Joy StartPad();\n");
+		StatReg|=IRQ;
+		mem.int_reg.joy=1;
+		break;
+	default:
+		printf("Joy data = %x\n",val);
+		break;
+	}
+	StatReg|=RX_RDY;
 }
 
-
-void psx_gamepad::WriteStat(u16 val)
+void psx_gamepad::WriteCtrl(u16 value)
 {
-	_getch();
-}
-
-void psx_gamepad::WriteCtrl(u16 val)
-{
-	_getch();
-	Ctrl = val;
+	CtrlReg = value & ~RESET_ERR;
+	if (value & RESET_ERR) StatReg &= ~IRQ;
+	if ((CtrlReg & SIO_RESET) || (!CtrlReg)) 
+	{
+		StatReg = TX_RDY | TX_EMPTY;
+		mem.int_reg.joy=1;
+	}
 }
 
 void psx_gamepad::WriteMode(u16 val)
 {
-	_getch();
 	Mode = val;
 }
 

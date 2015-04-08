@@ -225,32 +225,6 @@ union t_gpustat
 	};
 };
 
-union t_tpage
-{
-	u16 full;
-	struct
-	{
-		unsigned tpage_x : 4;
-		unsigned tpage_y : 1;
-		unsigned transp  : 2;
-		unsigned tpage_c : 2;
-		unsigned         : 2;
-		unsigned tex_dis : 1;
-		unsigned         : 4;
-	};
-};
-
-union t_clut
-{
-	u16 full;
-	struct
-	{
-		unsigned x_base : 6;
-		unsigned y_base : 9;
-		unsigned : 1;
-	};
-};
-
 /* CDROM */
 
 union t_cdindex

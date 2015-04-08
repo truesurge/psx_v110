@@ -28,13 +28,12 @@ void psx_cpu::Fetch()
 
 void psx_cpu::Execute()
 {
-	CYCLES+=2;
+	counters.Advance(3);
 
 	if (slot == 0)
 	{
 		main[opcode.op]();
 		pc += 4;
-		CYCLES+=2;
 	}
 	else
 	{
@@ -44,5 +43,4 @@ void psx_cpu::Execute()
 		TestJump();
 		counters.Manage();
 	}
-
 }

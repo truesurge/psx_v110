@@ -103,11 +103,13 @@
 #define CDREG3		0x1F801803
 
 
-#define T0_VALUE  0x1F801100
-#define T1_VALUE  0x1F801110
-#define T2_VALUE  0x1F801120
+#define T0_VALUE   0x1F801100
+#define T1_VALUE   0x1F801110
+#define T2_VALUE   0x1F801120
 
-#define T1_MODE   0x1F801114
+#define T0_MODE    0x1F801104
+#define T1_MODE    0x1F801114
+#define T2_MODE    0x1F801124
 
 #define T0_TARGET  0x1F801108
 #define T1_TARGET  0x1F801118
@@ -115,24 +117,14 @@
 
 /* SCREEN */
 
-//   PAL  : start 256 313 scanlines per frame(13Ah)
-//   NTSC : start 243 263 scanlines per frame(107h)
-//
-//
-//   PAL  : 2167 cycles per scanline(or 3406.1 or so ? )
-//	 NTSC : 2171 cycles per scanline(or 3413.6 or so ? )
-//  
-//   565, 045
-
-//#define VSYNC         250 * 1500
-
-#define VSYNC         248 * 1584
+#define CLOCK		33868800.0
+#define VSYNC       33868800.0 / 50.0
 
 /* GPU */
 
-#define CMD_B(n) (((cmd[n] & 0xFF0000) >> 0x10)*1)
-#define CMD_G(n) (((cmd[n] & 0x00FF00) >> 0x08)*1)
-#define CMD_R(n) ((cmd[n] & 0x0000FF)*1)
+#define CMD_B(n) (((cmd[n] & 0xFF0000) >> 0x10))
+#define CMD_G(n) (((cmd[n] & 0x00FF00) >> 0x08))
+#define CMD_R(n) ((cmd[n] & 0x0000FF))
 
 #define CMD_W(n)   (cmd[n]&0x0000FFFF)
 #define CMD_H(n)   (cmd[n]>>16)
@@ -143,8 +135,11 @@
 #define CMD_TX(n)  (cmd[n]&0xFF)
 #define CMD_TY(n)  ((cmd[n]&0xFF00)>>0x8)
 
-#define COLOR16(n) glColor3f((((n) & 0x7C00) >> 10)/31.0, (((n) & 0x3E0) >> 5)/31.0, ((n) & 0x1F)/31.0);
-#define COLOR24(n) glColor3f(CMD_R(n)/255.0, CMD_G(n)/255.0, CMD_B(n)/255.0);
+#define COLOR16(n)      glColor3f((((n) & 0x7C00) >> 10)/31.0, (((n) & 0x3E0) >> 5)/31.0, ((n) & 0x1F)/31.0);
+#define COLOR16_TILE(n) glColor3f( ((n) & 0x1F)/32.0-0.05, (((n) & 0x3E0) >> 5)/32.0-0.05,(((n) & 0x7C00) >> 10)/32.0-0.05);
+#define COLOR16_REV(n)  glColor3f( ((n) & 0x1F)/31.0, (((n) & 0x3E0) >> 5)/31.0,(((n) & 0x7C00) >> 10)/31.0);
+#define COLOR24(n)      glColor3f(CMD_R(n)/255.0, CMD_G(n)/255.0, CMD_B(n)/255.0);
+
 #define VERTEX(n)  glVertex2sv((GLshort*)&cmd[n]);
 
 #define CLEAR()	   cmd.clear()

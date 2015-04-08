@@ -5,7 +5,7 @@ static int   spu_sbaddr;
 static short spureg[(0x1e00 - 0x1c00) / 2];
 static short spumem[512*1024];
 
-void SPU_writeRegister(unsigned long reg, unsigned short val) {
+void SPU_writeregister(unsigned long reg, unsigned short val) {
 	spureg[(reg - 0x1f801c00) / 2] = val;
 	switch (reg) {
 	case 0x1f801da6: // spu sbaddr
@@ -19,7 +19,7 @@ void SPU_writeRegister(unsigned long reg, unsigned short val) {
 	}
 }
 
-unsigned short SPU_readRegister(unsigned long reg) {
+unsigned short SPU_readregister(unsigned long reg) {
 	switch (reg){
 	case 0x1f801da6: // spu sbaddr
 		return spu_sbaddr / 8;
