@@ -1,13 +1,18 @@
 #include "psx_gamepad.h"
 #include "interpreter.h"
 #include "psx_counters.h"
+#include "psx_gpu.h"
 #include "psx_cpu.h"
 #include "psx_mem.h"
 #include <cstdio>
+#include <conio.h>
 
 extern psx_cpu R3000A;
 extern psx_counters counters;
 extern psx_mem mem;
+extern psx_gpu GL;
+
+psx_gamepad pad;
 
 // Status Flags
 #define TX_RDY		0x0001
@@ -30,13 +35,38 @@ extern psx_mem mem;
 #define RTS			0x0020
 #define SIO_RESET	0x0040
 
+//u8 ReadKeys()
+//{ 
+//	if(_kbhit())
+//	{
+//		char key=_getch();
+//		if(key=='d') return 0x10;
+//		if(key=='a') return 0x40;
+//	}
+//	return 0xFF;
+//}
+
+void ReadKeys(GLFWwindow *screen, int k, int s, int a, int m)
+{
+	pad.state[0].full=0xFFFF;
+
+	if((k==GLFW_KEY_D)) pad.state[0].left=0;
+	if((k==GLFW_KEY_A)) pad.state[0].right=0;
+	if((k==GLFW_KEY_K)) pad.state[0].cross=0;
+}
+
 psx_gamepad::psx_gamepad()
 {
+	pad.state[0].full=0xFFFF;
+
+	glfwSetKeyCallback(GL.screen,ReadKeys);
+
 	StatReg = 0 | TX_RDY | TX_EMPTY;
 }
 
 u16 psx_gamepad::ReadStat()
 {
+	//printf("Stat?\n");
 	return StatReg;
 }
 
@@ -47,15 +77,20 @@ u16 psx_gamepad::ReadCtrl()
 
 u8 psx_gamepad::ReadData()
 {
-	printf("Data?\n");
-	mem.int_reg.joy=0;
-	_getch();
-	return 0x41;
+	StatReg&=~RX_RDY;
+
+	if(buffer.size()!=0)
+	{
+		u8 ret = buffer[0];
+		buffer.erase(buffer.begin());
+		//printf("Data ? %x\n",ret);
+		return ret;
+	}
+	return 0;
 }
 
 u16 psx_gamepad::ReadMode()
 {
-
 	return Mode;
 }
 
@@ -65,33 +100,60 @@ void psx_gamepad::WriteStat(u16 val)
 
 void psx_gamepad::WriteData(u8 val)
 {
+	//printf("Data = %x\n",val);
+	static int num=0; 
+
 	switch(val)
 	{
-	case 0x1:
-		printf("Joy StartPad();\n");
-		StatReg|=IRQ;
-		mem.int_reg.joy=1;
+	case 0x1 :
+
+		StatReg|=RX_RDY;
+
+		buffer.push_back(0xFF); //        HIGH-Z
+
+		buffer.push_back(0x41); //   |    Digital Controller ID 
+		buffer.push_back(0x5A); //  \|/ 
+		if(num==100)
+		{
+			buffer.push_back(0xFF);
+			buffer.push_back(0xBF);
+			pad.state[0].full=0xFFFF;
+			num=0;
+		}
+		else 
+		{
+			buffer.push_back(0xFF);
+			buffer.push_back(0xFF);
+			num++;
+		}
+
+
+		counters.delay=500;
+
 		break;
 	default:
-		printf("Joy data = %x\n",val);
+
+		StatReg|=RX_RDY;
+
 		break;
 	}
-	StatReg|=RX_RDY;
 }
 
 void psx_gamepad::WriteCtrl(u16 value)
 {
+	//printf("Ctrl = %x\n",value);
 	CtrlReg = value & ~RESET_ERR;
 	if (value & RESET_ERR) StatReg &= ~IRQ;
 	if ((CtrlReg & SIO_RESET) || (!CtrlReg)) 
 	{
 		StatReg = TX_RDY | TX_EMPTY;
-		mem.int_reg.joy=1;
+		counters.delay=500;
 	}
 }
 
 void psx_gamepad::WriteMode(u16 val)
 {
+	//printf("Mode = %x\n",val);
 	Mode = val;
 }
 

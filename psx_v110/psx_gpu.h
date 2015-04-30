@@ -15,7 +15,7 @@ union fpixel
 		unsigned r : 5;
 		unsigned g : 5;
 		unsigned b : 5;
-		unsigned a : 1;
+		unsigned alpha : 1;
 	};
 	struct
 	{
@@ -80,7 +80,7 @@ public:
 
 	void POLY_F4();
 	void POLY_F3();
-	void POLY_FT4();
+	void POLY_FT4(int tranparency);
 	void POLY_G3();
 	void POLY_G4();
 	void RECT();

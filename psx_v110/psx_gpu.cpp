@@ -9,8 +9,9 @@ extern psx_gpu GL;
 
 u16 swap16(u16 val)
 {
-    return ((val & 0xff) << 8) | ((val & 0xff00) >> 8);
+    return ( (((val) >> 8) & 0x00FF) | (((val) << 8) & 0xFF00) );
 }
+
 u32 swap32(u32 val)
 {
     u32 result = 0;
@@ -70,9 +71,9 @@ u32 psx_gpu::ReadGP0()
 {
 	if (transfer.size()!=0)
 	{
-		u32 ret = ( swap16(transfer[0]>>16) | (transfer[1]) );
+		u32 ret = swap32( (swap16(transfer[0]>>16)) | (swap16(transfer[1])) );
 		transfer.erase(transfer.begin());
-		return swap32(ret);
+		return ret;
 	}
 
 	GP1.full |= 0x14000000;
@@ -105,10 +106,17 @@ void psx_gpu::WriteGP0(u32 val)
 		POLY_F4();
 		break;
 	case 0x2c:
+		//printf("Opaque texture blend!\n");
+		POLY_FT4(0);
 	case 0x2d:
+		//printf("Opaque raw!\n");
+		POLY_FT4(1);
 	case 0x2e:
+		//printf("Transparent texture blend!\n");
+		POLY_FT4(1);
 	case 0x2f:
-		POLY_FT4();
+		//printf("Transparent raw!\n");
+		POLY_FT4(0);
 		break;
 	case 0x30:
 	case 0x31:
@@ -147,7 +155,7 @@ void psx_gpu::WriteGP0(u32 val)
 		break;
 	default:
 		printf("GPU : GP0 = %08X\n", val);
-		_getch();
+		//_getch();
 		cmd.erase(cmd.begin());
 		break;
 	}
@@ -168,12 +176,12 @@ psx_gpu::psx_gpu()
 	GP1.full = 0x14802000;
 
 	glfwInit();
-	screen = glfwCreateWindow(480,360, "PSX VRAM OUT", NULL, NULL);
+	screen = glfwCreateWindow(512*2,256*2, "PSX VRAM OUT", NULL, NULL);
 	//glfwHideWindow(screen);
 	glfwSetWindowPos(screen, 100, 100);
 	glfwMakeContextCurrent(screen);
 	glMatrixMode(GL_PROJECTION);
-	gluOrtho2D(0, 640, 480, 0);
+	gluOrtho2D(0, 1024, 512, 0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glClearColor(0, 0, 0, 0);
@@ -199,7 +207,7 @@ void psx_gpu::ShowVram()
 void psx_gpu::RECT()
 {
 	REQUIRE(3);
-	printf("GL : RECT\n");
+	//printf("GL : RECT\n");
 	//_getch();
 	int x, y;
 	int w, h;
@@ -228,6 +236,14 @@ void psx_gpu::RECT()
 			}
 
 		}
+
+	glBegin(GL_QUADS);
+	COLOR24(0);
+	glVertex2i(x,y);
+	glVertex2i(x+w,y);
+	glVertex2i(x+w,y+h);
+	glVertex2i(x,y+h);
+	glEnd();
 
 	CLEAR();
 }
@@ -332,6 +348,8 @@ void psx_gpu::TILE()
 	tx=tex_page.xb*64;
 	ty=tex_page.yb*256;
 
+	if(tex_page.col==0)
+	{
 	u16 table[16];
 	u16 image[256*4][256];
 
@@ -351,17 +369,16 @@ void psx_gpu::TILE()
 	for(int j=0;j<h;j++)
 		for(int i=0;i<w;i++)
 		{
-			if(i==w-1) continue;
-			if( (image[i][j]==0) && (image[i+1][j]==0) ) continue;
-			COLOR16_TILE(image[i][j]);
+			if(image[i][j]==0) continue;
+			COLOR16_TILE((image[i][j]));
 			glVertex2i(x+i,y+j);
 		}
 	glEnd();
-
+	}
 	CLEAR();
 }
 
-void psx_gpu::POLY_FT4()
+void psx_gpu::POLY_FT4(int transparency)
 {
 	REQUIRE(9);
 	
@@ -402,7 +419,7 @@ void psx_gpu::POLY_FT4()
 	for(int i=0;i<w;i++)
 		for(int j=0;j<h;j++)
 		{
-			if(image[i][j]==0) continue;
+			if(transparency==0 && image[i][j]==0) continue;
 			COLOR16_REV(image[i][j]);
 			glVertex2i(x+i,y+j);
 		}
@@ -453,7 +470,7 @@ void psx_gpu::C0()
 	
 	for (int i = 0; i < w; i++)
 		for (int j = 0; j < h; j++)
-			transfer.push_back(swap16(vram[x+i][y+j].full));
+			transfer.push_back(vram[x+i][y+j].full);
 
 	CLEAR();
 }

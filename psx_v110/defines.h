@@ -118,7 +118,8 @@
 /* SCREEN */
 
 #define CLOCK		33868800.0
-#define VSYNC       33868800.0 / 50.0
+#define VSYNC       565045
+#define HSYNC       33868800.0 / (50.0 * 260.0)
 
 /* GPU */
 

@@ -47,22 +47,16 @@ u8 psx_cd::R1()
 }
 u8 psx_cd::R2()
 {
-	//printf("CD : R2?\n");
-	//_getch();
 	return 0;
 }
 u8 psx_cd::R3()
 {
-	//printf("CD : R3?\n");
-	//_getch();
 	return int_flag.full;
 }
 
 
 void psx_cd::W0(u8 val)
 {
-	//printf("CD : R0=%X\n", val);
-	//_getch();
 	index.full &= 0xFC;
 	index.full |= val&3;
 }
@@ -76,7 +70,7 @@ void psx_cd::W1(u8 val)
 			//printf("CD : GetStat \n");
 			int_flag.int_type = 3;
 			response.push(index.full);
-
+					
 			mem.int_reg.cdrom = mem.int_mask.cdrom;
 			break;
 		case 0x19:
@@ -93,11 +87,17 @@ void psx_cd::W1(u8 val)
 				response.push(version[2]);
 				response.push(version[3]);
 
+						
 				mem.int_reg.cdrom = mem.int_mask.cdrom;
 			}
 			break;
+		//case 0xA:
+		//	printf("CD : Init\n");
+		//	int_flag.int_type = 2;
+		//	response.push(index.full);
+		//	break;
 		default:
-			//printf("CD : Push cmd %X\n", val);
+			printf("CD : Push cmd %X\n", val);
 			break;
 		}
 		//_getch();

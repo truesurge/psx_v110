@@ -33,16 +33,15 @@ struct Counter
 class psx_counters
 {
 public:
-	u32    hsync_cycles;
 	u32    vsync_cycles;
-	u32	   frames;
-	double t1,t2;
+	u32	   delay,frames;
 
 	Counter Counters[3];
 
 	void WriteMode(u8 n,u32 val);
 	void WriteTarget(u8 n,u32 val);
 	u16  GetValue(u8 n);
+	void Tick();
 	void Advance(int n);
 	void Manage(); 
 

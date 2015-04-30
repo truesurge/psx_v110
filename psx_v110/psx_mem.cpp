@@ -15,13 +15,13 @@ extern psx_gpu GL;
 extern psx_dma dma;
 extern psx_counters counters;
 extern psx_cd cd;
-
-psx_gamepad pad;
+extern psx_gamepad pad;
 
 psx_mem::psx_mem()
 {
 	FILE* file;
 	fopen_s(&file, "./bios/scph1002.bin", "rb");
+	//fopen_s(&file, "./bios/scph102.bin", "rb");
 	if (file == NULL)
 	{
 		printf("Place scph1002.bin in bios folder\n");
@@ -102,9 +102,8 @@ void psx_mem::W16(u32 address, u16 val)
 
 
 		case 0x1F801040:
-			//printf("PAD 16 DATA = %x\n",val);
-			pad.WriteData((u8)val);
-			pad.WriteData((u8)(val>>8));
+			printf("PAD 16 DATA = %x\n",val);
+			_getch();
 			break;
 		case 0x1F801044:
 			//printf("PAD 16 STAT = %x\n",val);
@@ -193,7 +192,27 @@ void psx_mem::W32(u32 address, u32 val)
 		case GPU1:
 			GL.WriteGP1(val);
 			break;
-		
+
+		case T1_VALUE:
+			counters.Counters[1].value = val;
+			break;
+		case T1_MODE:
+			counters.WriteMode(1,val);
+			break;
+		case T1_TARGET:
+			counters.WriteTarget(1,val);
+			break;
+
+		case T2_VALUE:
+			counters.Counters[2].value = val;
+			break;
+		case T2_MODE:
+			counters.WriteMode(2,val);
+			break;
+		case T2_TARGET:
+			counters.WriteTarget(2,val);
+			break;
+
 		default:
 			//printf("W32 : WTF 0x%08X = %X \n", address, val);
 			*(u32*)(io + (real & 0x1FFF)) = val;
@@ -248,6 +267,11 @@ u16 psx_mem::R16(u32 address)
 	{
 		switch (real)
 		{
+		case JOY_DATA:
+			printf("PAD Data 16 ?\n");
+			_getch();
+			//return pad.ReadData();
+			break;
 		case JOY_STAT:
 			return pad.ReadStat();
 			break;
@@ -299,6 +323,11 @@ u32 psx_mem::R32(u32 address)
 	{
 		switch (real)
 		{
+		case JOY_DATA:
+			printf("PAD Data 32 ?\n");
+			_getch();
+			//return pad.ReadData();
+			break;
 		case DICR:
 			return dma.dicr.full;
 			break;

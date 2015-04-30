@@ -28,7 +28,7 @@ void psx_cpu::Fetch()
 
 void psx_cpu::Execute()
 {
-	counters.Advance(3);
+	counters.Advance(2);
 
 	if (slot == 0)
 	{
@@ -37,10 +37,12 @@ void psx_cpu::Execute()
 	}
 	else
 	{
+		counters.Advance(1);
 		main[opcode.op]();
 		pc = slot;
 		slot = 0;
 		TestJump();
 		counters.Manage();
 	}
+	counters.Tick();
 }
